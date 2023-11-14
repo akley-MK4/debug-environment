@@ -14,6 +14,8 @@ test-run:
 	 echo "test run"
 
 docker-build:
+	     go version
+	     go build -o $(BUILD_DAEMONAPP_OUTPUT_PATH) $(DAEMONAPP_PATH)/main.go
 	     sudo docker build -f $(DOCKERFILE_PATH) -t $(IMAGE_NAME):$(IMAGE_VER) $(DOCKER_BUILD_DIR)
 
 docker-ps:
@@ -33,8 +35,14 @@ docker-stop:
 	    sudo docker stop $(CONTAINER_NAME)
 
 docker-rm:
-	  make docker-stop
+	  sudo docker stop $(CONTAINER_NAME)
 	  sudo docker rm $(CONTAINER_NAME)
+
+docker-rmi-repo:
+	        sudo docker rmi $(IMAGE_NAME)
+
+docker-rmi-repo-tag:
+	            sudo docker rmi $(IMAGE_NAME):$(IMAGE_VER)
 
 build-daemon-app:
 	         go version
@@ -42,5 +50,5 @@ build-daemon-app:
 	           
 
 
-.PHONY: docker-build docker-ps docker-run docker-start docker-stop docker-rm build-daemon-app
+.PHONY: docker-build docker-ps docker-run docker-start docker-stop docker-rm docker-rmi-repo docker-rmi-repo-tag build-daemon-app 
 
