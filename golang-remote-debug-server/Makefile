@@ -25,6 +25,7 @@ docker-run:
 	   sudo docker run -d -p $(MAPPING_SSH_PORT):22 --privileged=true --name $(CONTAINER_NAME) $(IMAGE_NAME):$(IMAGE_VER)
 	   sleep $(SLEEP_SECS)
 	   sudo docker ps -f name=$(CONTAINER_NAME)
+	   sudo docker logs $(CONTAINER_NAME)
 
 docker-start:
 	     sudo docker start $(CONTAINER_NAME)
