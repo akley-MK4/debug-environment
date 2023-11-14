@@ -24,6 +24,7 @@ ENV PATH=$GOPATH/bin:$GOROOT/bin:$USER_BIN:$PATH
 RUN echo 'root:pwroot111' | chpasswd
 #RUN useradd -s /bin/bash -p "debuguser1" -m -G sudo debuguser1
 RUN useradd -s /bin/bash -m -G sudo $USER_NAME && echo "$USER_NAME:$USER_NAME" | chpasswd
+RUN sed -i "s/^#PermitRootLogin.*/PermitRootLogin yes/g" /etc/ssh/sshd_config
 
 WORKDIR $USER_HOME
 USER $USER_NAME
