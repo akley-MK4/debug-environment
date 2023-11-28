@@ -30,6 +30,13 @@ RUN sed -i "s/^#PermitRootLogin.*/PermitRootLogin yes/g" /etc/ssh/sshd_config
 WORKDIR $USER_HOME
 USER $USER_NAME
 
+RUN echo "export GOROOT=${GOROOT}" >> ~/.bashrc && \
+echo "export GOBIN=${GOBIN}" >> ~/.bashrc && \
+echo "export GOMODCACHE=${GOMODCACHE}" >> ~/.bashrc && \
+echo "export GOPATH=${GOPATH}" >> ~/.bashrc && \
+echo "export PATH=$GOPATH/bin:$GOROOT/bin:$USER_BIN:$PATH" >> ~/.bashrc
+
+
 RUN mkdir -p bin go_sdks go_env/bin go_project_mapping go_project_local out_comp configs daemon-app-src
 
 RUN yes | ssh-keygen -f ~/.ssh/id_rsa && touch ~/.ssh/authorized_keys
