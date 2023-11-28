@@ -8,7 +8,7 @@ echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-backports main c
 echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security main contrib non-free" >> /etc/apt/sources.list && \
 apt-get clean && apt-get update && apt-get install -y vim iputils-ping telnet
 
-RUN apt-get install -y htop wget sudo tcpdump net-tools openssh-server
+RUN apt-get install -y htop wget sudo curl tcpdump net-tools openssh-server
 
 ENV USER_NAME=debuguser1
 ENV USER_HOME=/home/$USER_NAME
