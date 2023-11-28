@@ -20,10 +20,11 @@ ENV GOBIN=$USER_HOME/go_env/bin
 ENV GOMODCACHE=$USER_HOME/go_env/pkg/mod
 ENV GOPATH=$USER_HOME/go_env
 ENV PATH=$GOPATH/bin:$GOROOT/bin:$USER_BIN:$PATH
+ENV USER_PWD=pw${USER_NAME}111
 
 RUN echo 'root:pwroot111' | chpasswd
 #RUN useradd -s /bin/bash -p "debuguser1" -m -G sudo debuguser1
-RUN useradd -s /bin/bash -m -G sudo $USER_NAME && echo "${USER_NAME}:pw${USER_NAME}111" | chpasswd
+RUN useradd -s /bin/bash -m -G sudo $USER_NAME && echo "${USER_NAME}:${USER_PWD}" | chpasswd
 RUN sed -i "s/^#PermitRootLogin.*/PermitRootLogin yes/g" /etc/ssh/sshd_config
 
 WORKDIR $USER_HOME
@@ -39,9 +40,8 @@ COPY ./daemon-app-src/* $USER_HOME/daemon-app-src/
 COPY ./startup.sh $USER_BIN/
 
 RUN tar -zxvf $USER_HOME/go_sdks/$GO_SDK_VER.tar.gz -C $USER_HOME/go_sdks/
-
 RUN go build -ldflags="-s -w" -o $USER_BIN/daemon-app daemon-app-src/main.go
-
+RUN echo "${USER_PWD}" | sudo -S chown -R $USER_NAME:$USER_NAME $USER_BIN/startup.sh && chmod +x $USER_BIN/startup.sh
 #CMD echo "$USER_NAME" |sudo -S service ssh start && $USER_BIN/daemon 
 ENTRYPOINT ["startup.sh"]
 
