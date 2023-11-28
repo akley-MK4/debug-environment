@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo 'debuguser1' | sudo -S service ssh start
+echo 'pwop1111' | sudo -S service ssh start
 daemon-app
 
 exit 0

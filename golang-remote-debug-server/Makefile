@@ -1,21 +1,21 @@
 all: test-run
 
-IMAGE_NAME = remote-debug-env
+IMAGE_NAME = go1.19-integration-env
 IMAGE_VER = t1
-CONTAINER_NAME = remote-debug-server
-MAPPING_SSH_PORT = 10012
+CONTAINER_NAME = go1.19-integration-service
+MAPPING_SSH_PORT = 10014
 DOCKERFILE_PATH = $(PWD)/Dockerfile
 DOCKER_BUILD_DIR = $(PWD)
 SLEEP_SECS=2
-DAEMONAPP_PATH = $(PWD)/daemon-app
-BUILD_DAEMONAPP_OUTPUT_PATH = $(PWD)/debug_daemon
+#DAEMONAPP_PATH = $(PWD)/daemon-app
+#BUILD_DAEMONAPP_OUTPUT_PATH = $(PWD)/debug_daemon
 
 test-run:
 	 echo "test run"
 
 docker-build:
-	     go version
-	     go build -o $(BUILD_DAEMONAPP_OUTPUT_PATH) $(DAEMONAPP_PATH)/main.go
+	     #go version
+	     #go build -o $(BUILD_DAEMONAPP_OUTPUT_PATH) $(DAEMONAPP_PATH)/main.go
 	     sudo docker build -f $(DOCKERFILE_PATH) -t $(IMAGE_NAME):$(IMAGE_VER) $(DOCKER_BUILD_DIR)
 
 docker-ps:
