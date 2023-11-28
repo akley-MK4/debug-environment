@@ -6,14 +6,14 @@ echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye main contrib non
 echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-updates main contrib non-free" >> /etc/apt/sources.list && \
 echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-backports main contrib non-free" >> /etc/apt/sources.list && \
 echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security main contrib non-free" >> /etc/apt/sources.list && \
-apt-get clean && apt-get update && apt-get install -y vim iputils-ping telnet
+apt-get clean && apt-get update
 
-RUN apt-get install -y htop wget sudo curl tcpdump net-tools openssh-server
+RUN apt-get install -y vim iputils-ping htop wget sudo curl tcpdump net-tools openssh-server libpcap-dev libbpf-dev gcc git
 
-ENV USER_NAME=debuguser1
+ENV USER_NAME=op1
 ENV USER_HOME=/home/$USER_NAME
 ENV USER_BIN=$USER_HOME/bin
-ENV GO_SDK_VER=go1.18.5.linux-amd64
+ENV GO_SDK_VER=go1.19.13.linux-amd64
 
 ENV GOROOT=$USER_HOME/go_sdks/go
 ENV GOBIN=$USER_HOME/go_env/bin
@@ -29,17 +29,18 @@ RUN sed -i "s/^#PermitRootLogin.*/PermitRootLogin yes/g" /etc/ssh/sshd_config
 WORKDIR $USER_HOME
 USER $USER_NAME
 
-RUN mkdir -p bin go_sdks go_env/bin go_project_mapping out_comp configs
+RUN mkdir -p bin go_sdks go_env/bin go_project_mapping out_comp configs daemon-app-src
 
 RUN yes | ssh-keygen -f ~/.ssh/id_rsa && touch ~/.ssh/authorized_keys
 
 #RUN cd $USER_HOME/go_sdks && wget -O go1.18.10.tar.gz --no-check-certificate https://golang.google.cn/dl/go1.18.10.linux-amd64.tar.gz && tar -zxvf go1.18.10.tar.gz
-
 COPY ./$GO_SDK_VER.tar.gz $USER_HOME/go_sdks/
-COPY ./debug_daemon $USER_BIN/
+COPY ./daemon-app-src/* $USER_HOME/daemon-app-src/
 COPY ./startup.sh $USER_BIN/
 
 RUN tar -zxvf $USER_HOME/go_sdks/$GO_SDK_VER.tar.gz -C $USER_HOME/go_sdks/
+
+RUN go build -mod=vendor -ldflags="-s -w" -o $USER_BIN/daemon-app daemon-app-src/main.go
 
 #CMD echo "$USER_NAME" |sudo -S service ssh start && $USER_BIN/daemon 
 ENTRYPOINT ["startup.sh"]
