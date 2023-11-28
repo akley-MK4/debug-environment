@@ -1,8 +1,9 @@
 all: test-run
 
-IMAGE_NAME = go1.19-integration-env
+GO_VER = go1.19
+IMAGE_NAME = $(GO_VER)-integration-env
 IMAGE_VER = t1
-CONTAINER_NAME = go1.19-integration-service
+CONTAINER_NAME = $(GO_VER)-integration-service
 MAPPING_SSH_PORT = 10014
 DOCKERFILE_PATH = $(PWD)/Dockerfile
 DOCKER_BUILD_DIR = $(PWD)
