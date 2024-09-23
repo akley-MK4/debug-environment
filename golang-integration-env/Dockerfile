@@ -36,6 +36,7 @@ echo "export GOMODCACHE=${GOMODCACHE}" >> ~/.bashrc && \
 echo "export GOPATH=${GOPATH}" >> ~/.bashrc && \
 echo "export PATH=$GOPATH/bin:$GOROOT/bin:$USER_BIN:$PATH" >> ~/.bashrc
 
+RUN git config --global http.sslVerify false
 
 RUN mkdir -p bin go_sdks go_env/bin go_project_mapping go_project_local out_comp configs daemon-app-src
 
@@ -47,6 +48,9 @@ COPY ./daemon-app-src/* $USER_HOME/daemon-app-src/
 COPY ./startup.sh $USER_BIN/
 
 RUN tar -zxvf $USER_HOME/go_sdks/$GO_SDK_VER.tar.gz -C $USER_HOME/go_sdks/
+
+RUN go install github.com/go-delve/delve/cmd/dlv@v1.9.0
+
 RUN go build -ldflags="-s -w" -o $USER_BIN/daemon-app daemon-app-src/main.go
 RUN echo "${USER_PWD}" | sudo -S chown -R $USER_NAME:$USER_NAME $USER_BIN/startup.sh && chmod +x $USER_BIN/startup.sh
 #CMD echo "$USER_NAME" |sudo -S service ssh start && $USER_BIN/daemon 
