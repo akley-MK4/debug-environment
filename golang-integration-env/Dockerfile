@@ -8,7 +8,7 @@ echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bullseye-backports main c
 echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security main contrib non-free" >> /etc/apt/sources.list && \
 apt-get clean && apt-get update
 
-RUN apt-get install -y vim iputils-ping htop wget sudo curl tcpdump net-tools openssh-server libpcap-dev libbpf-dev gcc git
+RUN apt-get install -y vim iputils-ping htop wget sudo curl tcpdump net-tools openssh-server libpcap-dev libbpf-dev gcc git jq
 
 ENV USER_NAME=op1
 ENV USER_HOME=/home/$USER_NAME
@@ -49,7 +49,7 @@ COPY ./startup.sh $USER_BIN/
 
 RUN tar -zxvf $USER_HOME/go_sdks/$GO_SDK_VER.tar.gz -C $USER_HOME/go_sdks/
 
-RUN go install github.com/go-delve/delve/cmd/dlv@v1.9.0
+RUN go install github.com/go-delve/delve/cmd/dlv@latest
 
 RUN go build -ldflags="-s -w" -o $USER_BIN/daemon-app daemon-app-src/main.go
 RUN echo "${USER_PWD}" | sudo -S chown -R $USER_NAME:$USER_NAME $USER_BIN/startup.sh && chmod +x $USER_BIN/startup.sh
